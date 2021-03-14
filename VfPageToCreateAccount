@@ -1,0 +1,66 @@
+<apex:page controller="CreateRecords" tabStyle="Account" showHeader="false" sidebar="false">
+    <apex:form >
+        <!-- Show Accounts-->
+        <apex:pageBlock title="Add Account"  rendered="{!showAccount}">
+            <apex:pageBlockSection title="Account Details">            
+                <apex:inputField value="{!act.name}" />
+                <apex:inputField value="{!act.site}"/>
+                <apex:inputField value="{!act.type}"/>
+                <apex:inputField value="{!act.accountNumber}"/>              
+            </apex:pageBlockSection>
+            <apex:commandButton value="Next" action="{!showContacts}" />
+        </apex:pageBlock>
+        <!--Show Contact-->
+        <apex:pageBlock title="Add Contact" id="pbCon" rendered="{!showContact}">
+            <apex:variable var="rowNumber" value="{!0}"/>
+            <apex:pageBlockTable value="{!lstContacts}" var="con">
+                <apex:column headerValue="First Name">
+                    <apex:inputField value="{!con.FirstName}"/>
+                </apex:column>
+                <apex:column headerValue="Last Name">
+                    <apex:inputField value="{!con.LastName}"/>
+                </apex:column>
+                <apex:column headerValue="Phone">
+                    <apex:inputField value="{!con.Phone}"/>
+                </apex:column>
+               
+                <apex:column headerValue="Action" >
+                    <apex:commandButton value="Delete" action="{!deleteRow}" reRender="pbCon">
+                        <apex:param name="ContactrowIndex" value="{!rowNumber}"/>
+                    </apex:commandButton>
+                    <apex:variable var="rowNumber" value="{!rowNumber}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Add Row" action="{!addRow}"/>
+               <apex:commandButton value="Next" action="{!showOpportunity}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <!-- Show Opportunity -->
+        <apex:pageBlock title="Add Opportunity" id="pbOppr" rendered="{!showOppor}">
+            <apex:variable var="rowNumber" value="{!0}"/>
+            <apex:pageBlockTable value="{!lstOppr}" var="oppr">
+                <apex:column headerValue="Opportunity Name">
+                    <apex:inputField value="{!oppr.Name}"/>
+                </apex:column>
+                <apex:column headerValue="Opportunity Stage">
+                    <apex:inputField value="{!oppr.StageName}"/>
+                </apex:column>
+                 <apex:column headerValue="Close Date">
+                    <apex:inputField value="{!oppr.CloseDate}"/>
+                </apex:column>
+               
+                <apex:column headerValue="Action" >
+                    <apex:commandButton value="Delete" action="{!OpprdeleteRow}" reRender="pbOppr">
+                        <apex:param name="OpprrowIndex" value="{!rowNumber}"/>
+                    </apex:commandButton>
+                    <apex:variable var="rowNumber" value="{!rowNumber}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Add Row" action="{!OppraddRow}"/>
+               <apex:commandButton value="Submit" action="{!save}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
