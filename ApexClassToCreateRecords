@@ -1,0 +1,77 @@
+public class CreateRecords {
+    Public List<Contact> lstContacts {get;set;}
+    Public List<Opportunity> lstOppr {get;set;}
+    public Integer ContactrowIndex {get;set;}
+    public Integer OpprrowIndex {get;set;}
+    public Account act{get;set;}
+    public Contact Con{get;set;}
+    public opportunity oppor{get;set;}
+    public boolean showContact{get;set;}
+    public boolean showOppor{get;set;}
+    public boolean showAccount{get;set;}
+   
+   
+    public CreateRecords() {
+        lstContacts = new list<Contact>();
+        lstContacts.add(new Contact());
+        lstOppr = new list<Opportunity>();
+        lstOppr.add(new Opportunity());
+        act = new Account();
+        Con=new Contact();
+        oppor=new opportunity();
+        showAccount=true;
+    }
+   
+    public void addRow(){
+        lstContacts.add(new Contact());
+    }
+    public PageReference deleteRow(){
+        ContactrowIndex = Integer.valueOf(ApexPages.currentPage().getParameters().get('ContactrowIndex'));
+        lstContacts.remove(ContactrowIndex);
+        return null;
+    }
+    public void OppraddRow(){
+        lstOppr.add(new Opportunity());
+    }
+    public PageReference OpprdeleteRow(){
+        OpprrowIndex = Integer.valueOf(ApexPages.currentPage().getParameters().get('OpprrowIndex'));
+        lstOppr.remove(OpprrowIndex);
+        return null;
+    }    
+    public PageReference cancel() {
+        return null;
+    }
+    public PageReference showContacts() {
+        showContact=true;
+        showAccount=false;  
+        showOppor=false;
+        return null;
+    }
+    public PageReference showOpportunity() {
+        showContact=false;
+        showOppor=true;
+        return null;
+    }
+   
+    public PageReference save() {
+       
+        upsert act;
+        for(Contact objCon:lstContacts){
+            objCon.AccountId=act.id;
+        }
+        if(!lstContacts.isEmpty()){
+            system.debug('lstContacts=='+lstContacts);
+            insert lstContacts;
+        }
+       
+        for(Opportunity objOppr:lstOppr){
+            objOppr.AccountId=act.id;
+            objOppr.contactid=lstContacts[0].id;
+        }
+         if(!lstOppr.isEmpty()){
+            insert lstOppr;
+        }
+        return null;
+    }
+}
+
