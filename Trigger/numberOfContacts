@@ -1,0 +1,27 @@
+trigger numberOfContacts on Contact (after insert) {
+    Map<Id, List<Contact>> mapAcctIdContactList = new Map<Id, List<Contact>>();
+    Set<Id> AcctIds = new Set<Id>();   
+    List<Account> listAcct = new List<Account>();
+    if(trigger.isInsert) {
+        for(Contact Con : trigger.New) {
+            if(String.isNotBlank(Con.AccountId)) {
+                if(!mapAcctIdContactList.containsKey(Con.AccountId)) {
+                    mapAcctIdContactList.put(Con.AccountId, new List<Contact>());
+                }
+                mapAcctIdContactList.get(Con.AccountId).add(Con); 
+                AcctIds.add(Con.AccountId);
+            }   
+        }  
+    }
+    if(AcctIds.size() > 0) {
+        listAcct = [SELECT Id, Number_of_Contacts__c FROM Account WHERE Id IN : AcctIds];
+        for(Account acct : listAcct) {
+            Integer noOfConts = 0;
+            if(mapAcctIdContactList.containsKey(acct.Id)) {
+                noOfConts += mapAcctIdContactList.get(acct.Id).size();
+            }
+            acct.Number_of_Contacts__c = acct.Number_of_Contacts__c == null ? noOfConts : (acct.Number_of_Contacts__c + noOfConts);
+                }
+        update listAcct;    
+    }
+}
